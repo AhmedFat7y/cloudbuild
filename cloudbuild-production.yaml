@@ -73,7 +73,7 @@ steps:
       - 'kubernetes.ingress.yaml'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER= test-cluster'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=test-cluster'
 
 images:
   - 'gcr.io/$PROJECT_ID/backend:$SHORT_SHA'
