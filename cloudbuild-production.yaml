@@ -59,6 +59,15 @@ steps:
         perl -pe "s/_NAME_/backend/g" \
         > kubernetes.ingress.yaml
 
+  - name: 'google/cloud-sdk:slim'
+    id: 'Dsiplay files content'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cat kubernetes.service.yaml
+        cat kubernetes.deployment.yaml
+        cat kubernetes.deployment.yaml
   # Apply a new Ingress ressource for the build $SHORT_SHA
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Apply Kubectl configuration'
