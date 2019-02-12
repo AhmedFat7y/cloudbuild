@@ -8,21 +8,20 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build deployable image (commit tag)'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/testapp-1:$SHORT_SHA', '.']
-    
+
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push deployable image (commit tag)'
     args: ['push', 'gcr.io/$PROJECT_ID/testapp-1:$SHORT_SHA']
-    
+
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build deployable image (latest tag)'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/testapp-1:latest', '.']
-    
+
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push deployable image (latest tag)'
     args: ['push', 'gcr.io/$PROJECT_ID/testapp-1:latest']
 
-
-# Patch a new Ingress ressource for the build $SHORT_SHA
+  # Patch a new Ingress ressource for the build $SHORT_SHA
 
   - name: 'google/cloud-sdk:slim'
     id: 'Generate a new Deployment Resource'
@@ -34,7 +33,7 @@ steps:
         perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
         perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" | \
         perl -pe "s/_NAME_/backend/g" \
-        \> kubernetes.deployment.yaml
+        > kubernetes.deployment.yaml
 
   - name: 'google/cloud-sdk:slim'
     id: 'Generate a new Service Ressource'
@@ -46,7 +45,7 @@ steps:
         perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
         perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" | \
         perl -pe "s/_NAME_/backend/g" \
-        \> kubernetes.service.yaml
+        > kubernetes.service.yaml
 
   - name: 'google/cloud-sdk:slim'
     id: 'Generate a new Ingress Ressource'
@@ -58,7 +57,7 @@ steps:
         perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
         perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" | \
         perl -pe "s/_NAME_/backend/g" \
-        \> kubernetes.ingress.yaml
+        > kubernetes.ingress.yaml
 
   # Apply a new Ingress ressource for the build $SHORT_SHA
   - name: 'gcr.io/cloud-builders/kubectl'
