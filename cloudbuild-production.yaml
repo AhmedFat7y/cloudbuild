@@ -30,9 +30,9 @@ steps:
       - '-c'
       - |
         cat kubernetes.deployment.yaml | \
-        perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
-        perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" | \
-        perl -pe "s/_NAME_/backend/g" \
+        perl -pe 's/_SHORT_SHA_/$SHORT_SHA/g' | \
+        perl -pe 's/_PROJECT_ID/$PROJECT_ID/g' | \
+        perl -pe 's/_NAME_/backend/g' \
         > kubernetes.deployment.yaml
 
   - name: 'google/cloud-sdk:slim'
@@ -42,9 +42,9 @@ steps:
       - '-c'
       - |
         cat kubernetes.service.yaml | \
-        perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
-        perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" | \
-        perl -pe "s/_NAME_/backend/g" \
+        perl -pe 's/_SHORT_SHA_/$SHORT_SHA/g' | \
+        perl -pe 's/_PROJECT_ID/$PROJECT_ID/g' | \
+        perl -pe 's/_NAME_/backend/g' \
         > kubernetes.service.yaml
 
   - name: 'google/cloud-sdk:slim'
@@ -54,9 +54,9 @@ steps:
       - '-c'
       - |
         cat kubernetes.ingress.yaml | \
-        perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
-        perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" | \
-        perl -pe "s/_NAME_/backend/g" \
+        perl -pe 's/_SHORT_SHA_/$SHORT_SHA/g' | \
+        perl -pe 's/_PROJECT_ID/$PROJECT_ID/g' | \
+        perl -pe 's/_NAME_/backend/g' \
         > kubernetes.ingress.yaml
 
   - name: 'google/cloud-sdk:slim'
@@ -65,9 +65,10 @@ steps:
     args:
       - '-c'
       - |
-        cat kubernetes.service.yaml
-        cat kubernetes.deployment.yaml
-        cat kubernetes.deployment.yaml
+        echo $(cat kubernetes.service.yaml)
+        echo $(cat kubernetes.deployment.yaml)
+        echo $(cat kubernetes.deployment.yaml)
+
   # Apply a new Ingress ressource for the build $SHORT_SHA
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Apply Kubectl configuration'
