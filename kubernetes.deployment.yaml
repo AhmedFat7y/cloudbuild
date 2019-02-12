@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: _NAME_-_SHORT_SHA_
+  env: _ENV_
+spec:
+  selector:
+    matchLabels:
+      app: _NAME_-_SHORT_SHA_
+      env: _ENV_
+  template:
+    metadata:
+      labels:
+        app: _NAME_-_SHORT_SHA_
+        env: _ENV_
+    spec:
+      containers:
+        - name: _NAME_-_SHORT_SHA_
+          image: gcr.io/_PROJECT_ID_/_NAME_:_SHORT_SHA_
+          ports:
+          - containerPort: 8080

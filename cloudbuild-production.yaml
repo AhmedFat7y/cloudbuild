@@ -20,7 +20,62 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push deployable image (latest tag)'
     args: ['push', 'gcr.io/$PROJECT_ID/testapp-1:latest']
-    
+
+
+# Patch a new Ingress ressource for the build $SHORT_SHA
+
+  - name: 'google/cloud-sdk:slim'
+    id: 'Generate a new Deployment Resource'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cat kubernetes.deployment.yaml | \
+        perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
+        perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" |
+        perl -pe "s/_NAME_/backend/g" \
+        kubernetes.deployment.yaml
+
+    - name: 'google/cloud-sdk:slim'
+    id: 'Generate a new Service Ressource'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cat kubernetes.service.yaml | \
+        perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
+        perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" |
+        perl -pe "s/_NAME_/backend/g" \
+        kubernetes.service.yaml
+
+    - name: 'google/cloud-sdk:slim'
+    id: 'Generate a new Ingress Ressource'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cat kubernetes.ingress.yaml | \
+        perl -pe "s/_SHORT_SHA_/$SHORT_SHA/g" | \
+        perl -pe "s/_PROJECT_ID/$PROJECT_ID/g" |
+        perl -pe "s/_NAME_/backend/g" \
+        kubernetes.ingress.yaml
+
+  # Apply a new Ingress ressource for the build $SHORT_SHA
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Apply Kubectl configuration'
+    args:
+      - 'apply'
+      - '-f'
+      - 'kubernetes.deployment.yaml'
+      - '-f'
+      - 'kubernetes.service.yaml'
+      - '-f'
+      - 'kubernetes.ingress.yaml'
+
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER= test-cluster'
+
 images:
-  - 'gcr.io/$PROJECT_ID/testapp-1:$SHORT_SHA'
-  - 'gcr.io/$PROJECT_ID/testapp-1:latest'
+  - 'gcr.io/$PROJECT_ID/backend:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/backend:latest'
