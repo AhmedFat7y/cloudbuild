@@ -1,5 +1,9 @@
 steps:
 - name: gcr.io/cloud-builders/docker
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/myimage:$SHORT_SHA', '.']
-images: ['gcr.io/$PROJECT_ID/myimage:$SHORT_SHA']
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/backend:staging', '.']
 
+- name: gcr.io/cloud-builders/docker
+  args: ['push', 'gcr.io/$PROJECT_ID/backend:$SHORT_SHA']
+
+- name: gcr.io/cloud-builders/docker
+  args: ['push', 'gcr.io/$PROJECT_ID/backend:staging']
