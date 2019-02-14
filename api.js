@@ -6,11 +6,11 @@ const HOST = '0.0.0.0';
 
 const app = express();
 app.get('/health', (req, res) => {
-  res.send('The API is healthy, thanks for checking!\n');
+  res.send('The API is healthy, thanks for checking 1!\n');
 });
 
 app.get('/', (req, res) => {
-  res.send('The API is healthy, thanks for checking!\n');
+  res.send('The API is healthy, thanks for checking 1!\n');
 });
 
 app.listen(PORT, HOST);
